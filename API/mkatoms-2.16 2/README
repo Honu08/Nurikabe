@@ -1,0 +1,69 @@
+                              MKAtoms
+			     ~~~~~~~~~
+
+
+DESCRIPTION
+~~~~~~~~~~~~
+
+This utility is designed to reformat the output of smodels, in order to put one
+atom per line. Additionally, it strips off all statistics. Models are separated
+by a line containing the word "::endmodel".
+
+
+INSTALLATION
+~~~~~~~~~~~~~
+
+If a precompiled binary exists for your system, just copy it to a directory in
+your $PATH (typically, in the directory where lparse and smodels reside). You
+can make sure that the program is executable by executing
+
+% cd [path to MKAtoms]
+% chmod a+rx mkatoms
+
+You may also want to download the getone and getall scripts (see below). Just
+repeat the above steps for each of them.
+
+If no precompiled binary is available for your system, you have to download the
+source package, uncompress and untar it, then execute:
+
+% cd MKAtoms
+% ./configure
+% make all
+% make install
+
+This will install MKAtoms, getone and getall in /usr/local/bin. If you want to 
+select a different location, specify a different prefix when you run "configure",
+as follows:
+
+% ./configure --prefix=/path/where/you/want/MKAtoms/installed
+
+Notice that you will probably need root access to the system in order to install
+in /usr/local/bin.
+
+
+USAGE
+~~~~~~
+
+mkatoms acts as a filter, i.e. the output of smodels can be directly piped into
+mkatoms as follows:
+
+% lparse [input files and options] | smodels [options] | mkatoms
+
+Alternatively, mkatoms may take its input from a file, as follows:
+
+% mkatoms < [file containing the output of smodels]
+
+For UNIX installations, two scripts are available to make the above calls
+simpler.
+
+% getone [lparse input files and options]
+
+invokes lparse, smodels and mkatoms and returns only the first model found.
+
+% getall [lparse input files and options]
+
+invokes lparse, smodels and mkatoms and returns all models found.
+
+
+------------------------
+Last Update: 10/23/2008

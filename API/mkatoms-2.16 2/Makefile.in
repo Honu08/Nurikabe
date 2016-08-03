@@ -1,0 +1,74 @@
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+
+CC = @CC@
+CPP = @CPP@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
+RANLIB = @RANLIB@
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LDLIBS = @LIBS@
+CXXFLAGS = @CXXFLAGS@ $(DEFS)
+CFLAGS = @CFLAGS@ $(DEFS)
+RM=rm -f
+
+LDIST=dist
+
+DEFAULT_SHELL=@DEFAULT_SHELL@
+BAT_EXT=@BAT_EXT@
+
+GETONE=getone$(BAT_EXT)
+GETALL=getall$(BAT_EXT)
+
+CFLAGS += -O3 -Wall
+
+.PHONY: all static install clean distclean
+
+all: mkatoms
+
+-include Makefile-local
+
+mkatoms: mkatoms.c
+
+static: CFLAGS += -static -static-libgcc
+static: clean mkatoms
+	@echo "Static version compiled as mkatoms"
+
+install: mkatoms
+	@if [ ! -z "$(BAT_EXT)" ]; then \
+		cp getone $(GETONE) ;\
+		cp getall $(GETALL) ;\
+	fi
+	@-( umask 22 ; mkdir -p $(bindir) ; chmod 0755 $(bindir) )
+	@$(INSTALL_PROGRAM) mkatoms $(bindir)
+	@$(INSTALL_PROGRAM) $(GETONE) $(bindir)
+	@$(INSTALL_PROGRAM) $(GETALL) $(bindir)
+
+clean:
+	rm -f mkatoms *.o
+
+distclean: clean
+	rm -fR config.cache config.h config.log config.status *config.cache autom4te.cache getall getone Makefile

@@ -1,0 +1,3 @@
+#! /bin/bash
+
+lparse $* | smodels 0 | mkatoms

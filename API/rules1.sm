@@ -1,0 +1,60 @@
+% File: nurikabe.lp
+
+col(1..5). row(1..5). color(w). color(b).
+
+%profesor adds
+%num(X):- row(X).
+%num(X):- col(X).
+
+%abs(X,X):- X>=0, num(X).
+%abs(X,-1*X):- X<0, num(X).
+
+% Keep some cells white (and paint the rest black)
+{cell(w,X,Y)} :- row(X), col(Y).
+
+% ensuring that the given constraints N1--N8 are satisfied:
+
+% N1: Numbered cells remain white.
+:- not cell(w,X,Y), numbered(X,Y,N).
+
+% N2 & N5 : With N7, every white cell is orthogonally connected
+% to some numbered cell.
+
+:- cell(w,X,Y), not w_connected(X,Y), row(X), col(Y).
+
+adj(C,R,C1,R1) :- col(C), col(C1), row(R), row(R1), |C-C1|+|R-R1|==1.
+
+%adj(C,R,C1,R1) :- col(C;C1), row(R;R1), abs(C-C1,C2), abs(R-R1, R2), (C2+R2)==1.
+
+connected(C,X,Y,X,Y) :- cell(C,X,Y), row(X), col(Y), color(C).
+
+connected(C,X,Y,U,V) :- connected(C,X,Y,W,Z), adj(W,Z,U,V),
+cell(C,U,V), row(X), row(U), row(W), col(Y), col(V), col(Z), color(C).
+
+w_connected(X,Y) :- connected(w,X,Y,U,V),
+cell(w,X,Y), numbered(U,V,N), row(X), col(Y).
+
+% N3 & N6: With N2, two numbered cells can not be orthogonally
+% connected.
+:- numbered(X,Y,N), numbered(U,V,M), X<U, connected(w,X,Y,U,V).
+:- numbered(X,Y,N), numbered(U,V,M), Y<V, connected(w,X,Y,U,V).
+
+% N4: Each island should contain the same number of white cells
+% as the number it contains, i.e., a white cell numbered N
+% is connected to exactly N white cells:
+island(X,Y) :- N{connected(w,X,Y,U,V):row(U),col(V)}N,numbered(X,Y,N).
+
+:- not island(X,Y), numbered(X,Y,N).
+
+% N7: All black cells should be connected orthogonally
+:- not connected(b,X,Y,U,V), cell(b,X,Y), cell(b,U,V),
+row(X), row(U), col(Y), col(V).
+
+cell(b,X,Y) :- not cell(w,X,Y), row(X), col(Y).
+
+% N8: No subset of black cells forms a 2x2 square.
+
+:- sqrBlack(X,Y), row(X), col(Y).
+sqrBlack(X,Y) :- cell(b,X+1,Y), cell(b,X,Y), cell(b,X, Y+1), cell(b,X+1, Y+1), row(X), col(Y).
+black(X,Y) :- cell(b,X,Y), row(X), col(Y).
+#show black/2.
