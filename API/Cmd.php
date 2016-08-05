@@ -4,10 +4,7 @@
     public static function solve($input){
       $output = shell_exec('./clingo '.$input.' rules1.sm | mkatoms');
       $data = array();
-
-      //check if is an answer?
-      //If$output[0];
-      echo "\n";
+      
       $x='';
       $y='';
 

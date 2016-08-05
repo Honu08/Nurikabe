@@ -9,22 +9,18 @@ col(1..5). row(1..5). color(w). color(b).
 %abs(X,X):- X>=0, num(X).
 %abs(X,-1*X):- X<0, num(X).
 
-% Keep some cells white (and paint the rest black)
+%Keep some cells white (and paint the rest black)
 {cell(w,X,Y)} :- row(X), col(Y).
 
-% ensuring that the given constraints N1--N8 are satisfied:
-
-% N1: Numbered cells remain white.
+%Numbered cells remain white.
 :- not cell(w,X,Y), numbered(X,Y,N).
 
-% N2 & N5 : With N7, every white cell is orthogonally connected
+%every white cell is orthogonally connected
 % to some numbered cell.
 
 :- cell(w,X,Y), not w_connected(X,Y), row(X), col(Y).
 
 adj(C,R,C1,R1) :- col(C), col(C1), row(R), row(R1), |C-C1|+|R-R1|==1.
-
-%adj(C,R,C1,R1) :- col(C;C1), row(R;R1), abs(C-C1,C2), abs(R-R1, R2), (C2+R2)==1.
 
 connected(C,X,Y,X,Y) :- cell(C,X,Y), row(X), col(Y), color(C).
 
@@ -34,19 +30,19 @@ cell(C,U,V), row(X), row(U), row(W), col(Y), col(V), col(Z), color(C).
 w_connected(X,Y) :- connected(w,X,Y,U,V),
 cell(w,X,Y), numbered(U,V,N), row(X), col(Y).
 
-% N3 & N6: With N2, two numbered cells can not be orthogonally
+% two numbered cells can not be orthogonally
 % connected.
 :- numbered(X,Y,N), numbered(U,V,M), X<U, connected(w,X,Y,U,V).
 :- numbered(X,Y,N), numbered(U,V,M), Y<V, connected(w,X,Y,U,V).
 
-% N4: Each island should contain the same number of white cells
+% Each island should contain the same number of white cells
 % as the number it contains, i.e., a white cell numbered N
 % is connected to exactly N white cells:
 island(X,Y) :- N{connected(w,X,Y,U,V):row(U),col(V)}N,numbered(X,Y,N).
 
 :- not island(X,Y), numbered(X,Y,N).
 
-% N7: All black cells should be connected orthogonally
+% All black cells should be connected orthogonally
 :- not connected(b,X,Y,U,V), cell(b,X,Y), cell(b,U,V),
 row(X), row(U), col(Y), col(V).
 

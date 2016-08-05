@@ -1,3 +1,4 @@
+//Array to map ID by coordinates in the grid
 var INPUT_ID = ["51", "52", "53", "54", "55",
 							 	"41", "42", "43", "44", "45",
 							 	"31", "32", "33", "34", "35",
@@ -10,13 +11,15 @@ $("#clear-page").click(function() {
 	window.location = "index.html";
 });
 
+//goes here when click solve button
 $("#solve").click(function() {
-	//put everything in white
 	
+	//put everything in white
 	for(var j=0; j<INPUT_ID.length; j++){
 		$("#"+(j+1)).css('background-color', '#FFFFFF');				
 	}
 	
+	//get the values of the numbered cell in grid
 	var input_values = [];
   for(var i=1; i<=25; i++){
 		if ($("#"+i).val() !== "") {
@@ -27,7 +30,7 @@ $("#solve").click(function() {
 	if(input_values.length > 0){
 		console.info(input_values);
 		//not empty call AJAX
-		performAjax({
+		performAjax({//calling AJAX
 			"task":"solve",
 			"data":input_values},function(data){
 			var json = JSON.parse(data);
@@ -84,6 +87,7 @@ $("#solve").click(function() {
 	}
 });
 
+//function to call AJAX by JQUERY
 function performAjax(data, callback) {
 	$.ajax({
 		url: "API/main.php",
