@@ -1,8 +1,8 @@
-% File: nurikabe.lp
+% File: rules1.sm
 
 col(1..5). row(1..5). color(w). color(b).
 
-%profesor adds
+%profesor Watson adds
 %num(X):- row(X).
 %num(X):- col(X).
 
@@ -19,14 +19,10 @@ col(1..5). row(1..5). color(w). color(b).
 % to some numbered cell.
 
 :- cell(w,X,Y), not w_connected(X,Y), row(X), col(Y).
-
 adj(C,R,C1,R1) :- col(C), col(C1), row(R), row(R1), |C-C1|+|R-R1|==1.
-
 connected(C,X,Y,X,Y) :- cell(C,X,Y), row(X), col(Y), color(C).
-
 connected(C,X,Y,U,V) :- connected(C,X,Y,W,Z), adj(W,Z,U,V),
 cell(C,U,V), row(X), row(U), row(W), col(Y), col(V), col(Z), color(C).
-
 w_connected(X,Y) :- connected(w,X,Y,U,V),
 cell(w,X,Y), numbered(U,V,N), row(X), col(Y).
 
